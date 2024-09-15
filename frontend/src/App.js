@@ -5,6 +5,7 @@ import LandingPage from './components/LandingPage';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Generator from './components/Generator';
+import Stories from './components/Stories';
 import {
   AppBar,
   Toolbar,
@@ -64,6 +65,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/generator" element={<Generator/>}/>
+          <Route path="/stories" element={<Stories/>}/>
         </Routes>
       </Router>
     </ThemeProvider>

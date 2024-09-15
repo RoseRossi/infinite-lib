@@ -38,6 +38,7 @@ const lengths = ['Short', 'Medium', 'Long']
 const predefinedCharacters = ['Maria', 'Marco', 'Vanessa', 'Dr. Green']
 
 export default function Generator() {
+  const [title, setTitle] = React.useState('')
   const [genre, setGenre] = React.useState('')
   const [theme, setTheme] = React.useState('')
   const [length, setLength] = React.useState('')
@@ -71,7 +72,7 @@ export default function Generator() {
   }
 
   const handleGenerateStory = () => {
-    console.log('Generating story with:', { genre, theme, length, selectedCharacters, storyPrompt })
+    console.log('Generating story with:', { title, genre, theme, length, selectedCharacters, storyPrompt })
   }
 
   return (
@@ -83,6 +84,14 @@ export default function Generator() {
               Story Generator
             </Typography>
             <Box component="form" sx={{ mt: 4 }}>
+            <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Title"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                />
+              </Box>
               <FormControl fullWidth margin="normal">
                 <InputLabel id="genre-label">Genre</InputLabel>
                 <Select
@@ -157,7 +166,7 @@ export default function Generator() {
                   label="Add Custom Character"
                   value={newCharacter}
                   onChange={(event) => setNewCharacter(event.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyUp={handleKeyPress}
                 />
                 <Button variant="contained" onClick={handleAddCharacter} sx={{ minWidth: '100px' }}>
                   Add
