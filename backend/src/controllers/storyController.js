@@ -1,49 +1,45 @@
-const huggingFace = require('../config/huggingface');
+const groqInstance = require('../config/groqcloud');  
 const Story = require('../models/Story');
 
-// Actualiza la función generateStory para incluir las opciones avanzadas
 exports.generateStory = async (req, res) => {
     const { title, prompt, genre, theme, characters, length } = req.body;
 
     try {
-        // Usar directamente el prompt proporcionado sin añadir texto extra
-        const refinedPrompt = prompt;
+        const data = {
+            messages: [
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+            model: "llama3-8b-8192",  // Cambiar el modelo si es necesario
+            max_tokens: length || 1000,
+            temperature: 0.7,
+            top_p: 0.9
+        };
 
-        // Solicitar al modelo que genere la historia
-        const response = await huggingFace.post('EleutherAI/gpt-neo-2.7B', {
-            inputs: refinedPrompt, 
-            options: {
-                max_length: length || 10000,
-                temperature: 0.5,
-                top_p: 0.9,
-                top_k: 50
-            }
-        });
-        
+        // Realizar la solicitud a la API de GroqCloud
+        const response = await groqInstance.post('/chat/completions', data);
 
-        const generatedText = response.data[0].generated_text;
+        const generatedText = response.data.choices[0].message.content;
 
-        // Limpiar el prompt del texto generado
-        const storyContent = generatedText.replace(refinedPrompt, '').trim();
-
-        // Crear un título corto para la historia
-
-        // Crear la nueva historia
+        // Crear una nueva historia con el contenido generado
         const newStory = new Story({
-            title,  // Título breve para la historia
-            content: storyContent,
+            title,
+            content: generatedText,
             genre,
             theme,
             characters,
-            versiones: [{ content: storyContent }],
+            versiones: [{ content: generatedText }],
             author: req.user.id
         });
 
         await newStory.save();
         res.status(201).json(newStory);
+
     } catch (error) {
-        console.error('Error al generar la historia:', error);
-        res.status(500).json({ message: 'Error al generar la historia' });
+        console.error('Error al generar la historia con GroqCloud:', error.response ? error.response.data : error.message);
+        res.status(500).json({ message: 'Error al generar la historia', error: error.response ? error.response.data : error.message });
     }
 };
 
