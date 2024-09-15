@@ -15,6 +15,8 @@ import {
   CssBaseline,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import UserProfile from './components/UserProfile';
+import StoryViewer from './components/StoryViewer';
 
 // Crear un tema personalizado con colores lilas
 const theme = createTheme({
@@ -66,6 +68,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/generator" element={<Generator/>}/>
           <Route path="/stories" element={<Stories/>}/>
+          <Route path="/userprof" element={<UserProfile/>}/>
+          <Route path="/story" element={<StoryViewer/>}/>
         </Routes>
       </Router>
     </ThemeProvider>
