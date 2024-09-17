@@ -59,15 +59,19 @@ export default function SignUp() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container component="main" maxWidth="xs">
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography component="h1" variant="h5">
+          <Box
+            sx={{
+              marginTop: 8,
+              padding: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              backgroundColor: 'white',
+              borderRadius: 2,
+              boxShadow: '0px 4px 10px rgba(28, 8, 28, 0.5)',
+            }}
+          >
+          <Typography component="h1" variant="h5" sx= {{ color: '#1c081c'}}>
             Sign Up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -111,7 +115,7 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               color="secondary"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, backgroundColor: '#452845', '&:hover': { backgroundColor: '#2b0f2b' } }}
             >
               Sign Up
             </Button>

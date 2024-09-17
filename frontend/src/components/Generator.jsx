@@ -134,10 +134,10 @@ export default function Generator() {
 
   return (
     <ThemeProvider theme={themeG}>
-      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', py: 4 }}>
+      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', py: 4, boxShadow: '0px 4px 10px rgba(28, 8, 28, 1)'}}>
         <Container maxWidth="md">
           <Paper elevation={3} sx={{ p: 4, backgroundColor: 'white' }}>
-            <Typography variant="h4" component="h1" gutterBottom align="center" color="secondary">
+            <Typography variant="h4" component="h1" gutterBottom align="center" color="#452845" style={{ fontWeight: 'bold' }}>
               {existingStory._id ? "Editar Historia" : "Generar Nueva Historia"}
             </Typography>
             <Box component="form" sx={{ mt: 4 }}>
@@ -242,7 +242,7 @@ export default function Generator() {
                     ))}
                   </Select>
                 </FormControl>
-                <Button variant="contained" onClick={handleAddCharacter} sx={{ minWidth: '100px' }}>
+                <Button variant="contained" onClick={handleAddCharacter} sx={{ minWidth: '100px', backgroundColor: '#452845', '&:hover': { backgroundColor: '#2b0f2b' }, color:'white' }} >
                   Add
                 </Button>
               </Box>
@@ -261,7 +261,7 @@ export default function Generator() {
                 color="secondary"
                 size="large"
                 onClick={handleGenerateStory}
-                sx={{ mt: 4 }}
+                sx={{ mt: 4, backgroundColor: '#452845', '&:hover': { backgroundColor: '#2b0f2b' } }}
               >
                 {existingStory._id ? "Actualizar Historia" : "Generar Historia"}
               </Button>

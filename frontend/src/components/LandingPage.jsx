@@ -41,6 +41,8 @@ export default function LandingPage({ isAuthenticated }) {
       <Box
         sx={{
           backgroundImage: 'linear-gradient(45deg, #D8BFD8 30%, #E6E6FA 90%)',
+          backgroundSize: '200% 200%',
+          animation: 'gradientAnimation 10s ease infinite',
           minHeight: '60vh',
           display: 'flex',
           flexDirection: 'column',
@@ -48,9 +50,20 @@ export default function LandingPage({ isAuthenticated }) {
           alignItems: 'center',
           textAlign: 'center',
           p: 4,
+          '@keyframes gradientAnimation': {
+            '0%': {
+              backgroundPosition: '0% 50%',
+            },
+            '50%': {
+              backgroundPosition: '100% 50%',
+            },
+            '100%': {
+              backgroundPosition: '0% 50%',
+            },
+          },
         }}
       >
-        <Typography variant="h2" component="h1" gutterBottom>
+        <Typography variant="h2" component="h1" gutterBottom sx={{ color: '#1c081c' }}>
           Unleash Your Imagination with La Biblioteca Infinita
         </Typography>
         <Typography variant="h5" gutterBottom>
@@ -60,7 +73,7 @@ export default function LandingPage({ isAuthenticated }) {
           variant="contained"
           color="secondary"
           size="large"
-          sx={{ mt: 4 }}
+          sx={{ mt: 4, backgroundColor: '#452845', '&:hover': { backgroundColor: '#2b0f2b' } }}
           component={Link}
           to={isAuthenticated ? "/generator" : "/login"} // Condición para cambiar la ruta
         >
@@ -78,7 +91,7 @@ export default function LandingPage({ isAuthenticated }) {
           alignItems: 'center',
         }}
       >
-        <Typography variant="h3" component="h2" gutterBottom align="center">
+        <Typography variant="h3" component="h2" gutterBottom align="center" sx={{ color: '#1c081c' }}>
           Features
         </Typography>
         <Grid container spacing={4} justifyContent="center">
@@ -141,7 +154,7 @@ export default function LandingPage({ isAuthenticated }) {
         }}
       >
         <Container maxWidth="md">
-          <Typography variant="h4" component="h2" gutterBottom>
+          <Typography variant="h4" component="h2" gutterBottom sx={{ color: '#1c081c' }}>
             Ready to Create Your Next Great Story?
           </Typography>
           <Typography variant="h6" gutterBottom>
@@ -152,7 +165,7 @@ export default function LandingPage({ isAuthenticated }) {
               variant="contained"
               color="secondary"
               size="large"
-              sx={{ mr: 2, mb: 2 }}
+              sx={{ mr: 2, mb: 2 , backgroundColor: '#452845', '&:hover': { backgroundColor: '#2b0f2b' }}}
               component={Link}
               to="/signup"
             >
