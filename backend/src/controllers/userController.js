@@ -27,9 +27,11 @@ exports.registerUser = async (req, res) => {
   
       await user.save();
   
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
+      const token = jwt.sign(
+        { id: user._id, email: user.email, username: user.username },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
   
       res.status(201).json({ token });
     } catch (error) {
@@ -58,10 +60,12 @@ exports.loginUser = async (req, res) => {
 
         console.log('JWT_SECRET:', process.env.JWT_SECRET); // Verifica que no sea undefined
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '1h',
-        });
-        console.log('Token generado:', token);
+        const token = jwt.sign(
+          { id: user._id, email: user.email, username: user.username },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' }
+      );
+      console.log('Token generado:', token);
 
         res.json({ token });
     } catch (error) {

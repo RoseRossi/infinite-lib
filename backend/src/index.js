@@ -1,24 +1,24 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
-const cors = require('cors');  // Import the cors package
+const cors = require('cors');
 
 dotenv.config();
-
 connectDB();
 
 const app = express();
 
-// Enable CORS to allow requests from your frontend
+// Configuración de CORS
 app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],  // Specify allowed headers
-    credentials: true
-  }));
-  
+    origin: 'http://localhost:3000',  // El frontend corre en localhost:3000
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,  // Permitir envío de cookies y credenciales
+}));
+
 app.use(express.json());
 
+// Rutas de la API
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/stories', require('./routes/storyRoutes'));
 

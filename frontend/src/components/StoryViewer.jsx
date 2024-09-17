@@ -7,7 +7,8 @@ import {
   Button,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';  // Usar useLocation para obtener la historia seleccionada
+
 const themeG = createTheme({
     palette: {
       primary: {
@@ -23,62 +24,55 @@ const themeG = createTheme({
         primary: '#000000', 
       },
     },
-  })
-
-const sampleStory = {
-  title: 'Amores Secretos',
-  content: 'Una historia sobre Lisa que se enamora de Lili, su mejor amiga del colegio...',
-  genre: 'Fantasía',
-  theme: 'Aventura',
-  characters: [
-    { name: 'Lisa', role: 'Protagonista' },
-    { name: 'Lili', role: 'Amiga' },
-  ],
-  versiones: [
-    { content: 'Primera versión del contenido...', createdAt: new Date() },
-  ],
-  author: 'User123',
-};
+  });
 
 export default function StoryViewer() {
   const navigate = useNavigate();
+  const location = useLocation();  // Obtén los datos pasados desde Stories.jsx
+  const story = location.state?.story;  // Extrae la historia desde el estado
 
   const handleModify = () => {
-    // Redirige a /generator pero todavia no lo hace para modificar 
-    //#TODO relacion HU7
-    navigate('/generator', { state: { ...sampleStory } });
+    // Redirige a /generator para modificar la historia
+    navigate('/generator', { state: { story } });
   };
+
+  if (!story) {
+    return (
+      <Typography variant="h6" align="center" color="error">
+        No story data found.
+      </Typography>
+    );
+  }
 
   return (
     <ThemeProvider theme={themeG}>
-    <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, backgroundColor: 'white', mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center" color="secondary">
-          {sampleStory.title}
-        </Typography>
+      <Container maxWidth="md">
+        <Paper elevation={3} sx={{ p: 4, backgroundColor: 'white', mt: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom align="center" color="secondary">
+            {story.title}
+          </Typography>
 
-        <Typography variant="h6" color="textSecondary" gutterBottom>
-          Género: {sampleStory.genre}
-        </Typography>
+          <Typography variant="h6" color="textSecondary" gutterBottom>
+            Género: {story.genre}
+          </Typography>
 
-        <Typography variant="body1" gutterBottom>
-          {sampleStory.content}
-        </Typography>
+          <Typography variant="body1" gutterBottom>
+            {story.content}
+          </Typography>
 
-
-        <Box mt={4}>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="large"
-            fullWidth
-            onClick={handleModify}
-          >
-            Modificar Historia
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
+          <Box mt={4}>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              fullWidth
+              onClick={handleModify}
+            >
+              Modificar Historia
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
     </ThemeProvider>
   );
 }

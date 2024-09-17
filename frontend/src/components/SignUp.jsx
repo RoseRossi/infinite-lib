@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -28,19 +29,15 @@ const theme = createTheme({
 });
 
 export default function SignUp() {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
-  });
-
+  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -48,13 +45,13 @@ export default function SignUp() {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/users/register', formData);
-      console.log('Registration successful:', response.data);
       setSuccess('Registration successful!');
-      setError(null);  // Clear any previous errors
+      setError(null);
+      navigate('/login'); // Redirige al login
     } catch (err) {
       console.error('Error during registration:', err);
       setError('Registration failed. Please try again.');
-      setSuccess(null);  // Clear any previous success
+      setSuccess(null);
     }
   };
 
@@ -74,7 +71,7 @@ export default function SignUp() {
             Sign Up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <TextField
+            <TextField
               margin="normal"
               required
               fullWidth
