@@ -1,42 +1,51 @@
 const huggingFace = require('../config/huggingface');
 const Story = require('../models/Story');
 
+// Actualiza la función generateStory para incluir las opciones avanzadas
 exports.generateStory = async (req, res) => {
-    const { prompt, genre, theme, characters, length } = req.body;
+    const { title, prompt, genre, theme, characters, length } = req.body;
 
     try {
-        // Refinar el prompt para que el modelo lo entienda mejor
-        const refinedPrompt = `${prompt}\n\nEn esta historia épica, veremos cómo el héroe Aran y su mentora Lara se enfrentan a desafíos épicos en su búsqueda por salvar la tierra.`;
+        // Usar directamente el prompt proporcionado sin añadir texto extra
+        const refinedPrompt = prompt;
 
+        // Solicitar al modelo que genere la historia
         const response = await huggingFace.post('EleutherAI/gpt-neo-2.7B', {
-            inputs: refinedPrompt,
-            options: { max_length: length || 300 }
+            inputs: refinedPrompt, 
+            options: {
+                max_length: length || 10000,
+                temperature: 0.5,
+                top_p: 0.9,
+                top_k: 50
+            }
         });
+        
 
         const generatedText = response.data[0].generated_text;
 
-        // Cortar la parte del prompt inicial para mantener solo la historia generada
+        // Limpiar el prompt del texto generado
         const storyContent = generatedText.replace(refinedPrompt, '').trim();
 
-        // Crear y guardar la historia en MongoDB
+        // Crear un título corto para la historia
+
+        // Crear la nueva historia
         const newStory = new Story({
-            title: prompt,  
+            title,  // Título breve para la historia
             content: storyContent,
             genre,
             theme,
             characters,
+            versiones: [{ content: storyContent }],
             author: req.user.id
         });
 
         await newStory.save();
-
         res.status(201).json(newStory);
     } catch (error) {
         console.error('Error al generar la historia:', error);
         res.status(500).json({ message: 'Error al generar la historia' });
     }
 };
-
 
 
 // Función para crear historias manualmente
@@ -97,14 +106,20 @@ exports.continueStory = async (req, res) => {
             return res.status(404).json({ message: 'Story not found' });
         }
 
-        const response = await huggingFace.post('gpt2', {
+        const response = await huggingFace.post('EleutherAI/gpt-neo-2.7B', {
             inputs: `${story.content} ${continuationPrompt}`,
-            options: { max_length: 150 }
+            options: { 
+                max_length: 150,
+                temperature: 0.7,
+                top_p: 0.9,
+                top_k: 50 
+            }
         });
 
         const continuation = response.data[0].generated_text;
 
         story.content += continuation;
+        story.versiones.push({ content: continuation });
         await story.save();
 
         res.status(200).json(story);

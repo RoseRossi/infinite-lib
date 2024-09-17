@@ -21,6 +21,10 @@ const StorySchema = new mongoose.Schema({
         name: String,
         role: String
     }],
+    versiones: [{
+        content: String,
+        createdAt: { type: Date, default: Date.now }
+    }],
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
