@@ -44,13 +44,13 @@ function App() {
         {/* Barra de Navegación Global */}
         <AppBar position="sticky" color="default" elevation={0}>
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="Logo" style={{ width: '40px', marginRight: '-1100px' }} />
+            <Button variant="h6" sx={{ flexGrow: 1 }} component={Link} to="/">
               La Biblioteca Infinita
-            </Typography>
+            </Button>
+          </Box>
             <Box>
-              <Button color="inherit" component={Link} to="/">
-                Features
-              </Button>
               <Button color="inherit" component={Link} to="/signup">
                 Sign Up
               </Button>
@@ -60,7 +60,6 @@ function App() {
             </Box>
           </Toolbar>
         </AppBar>
-
         {/* Definición de Rutas */}
         <Routes>
           <Route path="/" element={<LandingPage />} />

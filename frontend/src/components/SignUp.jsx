@@ -8,6 +8,7 @@ import {
   CssBaseline,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
 
 const theme = createTheme({
   palette: {
@@ -28,10 +29,13 @@ const theme = createTheme({
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: ''
   });
+
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -40,10 +44,18 @@ export default function SignUp() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica de enviar los datos al servidor
-    console.log('Form submitted:', formData);
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/register', formData);
+      console.log('Registration successful:', response.data);
+      setSuccess('Registration successful!');
+      setError(null);  // Clear any previous errors
+    } catch (err) {
+      console.error('Error during registration:', err);
+      setError('Registration failed. Please try again.');
+      setSuccess(null);  // Clear any previous success
+    }
   };
 
   return (
@@ -62,16 +74,16 @@ export default function SignUp() {
             Sign Up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <TextField
+          <TextField
               margin="normal"
               required
               fullWidth
-              id="name"
-              label="Name"
-              name="name"
-              autoComplete="name"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
               autoFocus
-              value={formData.name}
+              value={formData.username}
               onChange={handleChange}
             />
             <TextField
@@ -107,6 +119,8 @@ export default function SignUp() {
               Sign Up
             </Button>
           </Box>
+          {error && <Typography color="error">{error}</Typography>}
+          {success && <Typography color="primary">{success}</Typography>}
         </Box>
       </Container>
     </ThemeProvider>

@@ -8,6 +8,7 @@ import {
   CssBaseline,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
 
 const theme = createTheme({
   palette: {
@@ -32,6 +33,10 @@ export default function Login() {
     password: ''
   });
 
+
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -39,10 +44,19 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica de enviar los datos al servidor
-    console.log('Form submitted:', formData);
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/login', formData);
+      console.log('Login successful:', response.data);
+      setSuccess('Login successful!');
+      setError(null);  // Clear any previous errors
+    } catch (err) {
+      console.error('Error during login:', err);
+      setError('Login failed. Please try again.');
+      setSuccess(null);  // Clear any previous success
+    }
   };
 
   return (
@@ -95,6 +109,8 @@ export default function Login() {
               Login
             </Button>
           </Box>
+          {error && <Typography color="error">{error}</Typography>}
+          {success && <Typography color="primary">{success}</Typography>}
         </Box>
       </Container>
     </ThemeProvider>
