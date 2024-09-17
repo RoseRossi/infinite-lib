@@ -48,7 +48,7 @@ export default function StoryViewer() {
     <ThemeProvider theme={themeG}>
       <Container maxWidth="md">
         <Paper elevation={3} sx={{ p: 4, backgroundColor: 'white', mt: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom align="center" color="secondary">
+          <Typography variant="h4" component="h1" gutterBottom align="center" color="#452845" style={{ fontWeight: 'bold' }}>
             {story.title}
           </Typography>
 
@@ -67,6 +67,7 @@ export default function StoryViewer() {
               size="large"
               fullWidth
               onClick={handleModify}
+              sx={{ backgroundColor: '#452845', '&:hover': { backgroundColor: '#2b0f2b'} }}
             >
               Modificar Historia
             </Button>

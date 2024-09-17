@@ -85,7 +85,7 @@ export default function Stories() {
       <ThemeProvider theme={themeG}>
         <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default', py: 4 }}>
           <Container maxWidth="md">
-            <Typography variant="h4" component="h1" gutterBottom align="center" color="secondary">
+            <Typography variant="h4" component="h1" gutterBottom align="center" color="#452845" style={{ fontWeight: 'bold' }}>
               Saved Stories
             </Typography>
 
@@ -103,7 +103,7 @@ export default function Stories() {
                   }}
                   onClick={() => handleClickPaper(story)}
                 >
-                  <Typography variant="h5" component="h2" gutterBottom color="secondary">
+                  <Typography variant="h5" component="h2" gutterBottom color="#452845" style={{ fontWeight: 'bold' }}>
                     {story.title}
                   </Typography>
                   <Typography variant="body1" color="text.primary">
