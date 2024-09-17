@@ -72,9 +72,13 @@ export default function Login({ setIsAuthenticated }) {
         <Box
           sx={{
             marginTop: 8,
+            padding: 4,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            backgroundColor: 'white',
+            borderRadius: 2,
+            boxShadow: '0px 4px 10px rgba(28, 8, 28, 0.5)',
           }}
         >
           <Typography component="h1" variant="h5">
@@ -110,7 +114,7 @@ export default function Login({ setIsAuthenticated }) {
               fullWidth
               variant="contained"
               color="secondary"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, backgroundColor: '#452845', '&:hover': { backgroundColor: '#2b0f2b'} }}
             >
               Login
             </Button>
