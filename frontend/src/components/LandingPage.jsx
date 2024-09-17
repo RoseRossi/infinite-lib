@@ -31,7 +31,7 @@ const features = [
   },
 ];
 
-export default function LandingPage() {
+export default function LandingPage({ isAuthenticated }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -62,7 +62,7 @@ export default function LandingPage() {
           size="large"
           sx={{ mt: 4 }}
           component={Link}
-          to="/signup" // Redirige a la página de Sign Up
+          to={isAuthenticated ? "/generator" : "/login"} // Condición para cambiar la ruta
         >
           Start Generating Stories
         </Button>
@@ -78,12 +78,7 @@ export default function LandingPage() {
           alignItems: 'center',
         }}
       >
-        <Typography
-          variant="h3"
-          component="h2"
-          gutterBottom
-          align="center"
-        >
+        <Typography variant="h3" component="h2" gutterBottom align="center">
           Features
         </Typography>
         <Grid container spacing={4} justifyContent="center">
@@ -159,7 +154,7 @@ export default function LandingPage() {
               size="large"
               sx={{ mr: 2, mb: 2 }}
               component={Link}
-              to="/signup" // Redirige a la página de Sign Up
+              to="/signup"
             >
               Sign Up
             </Button>

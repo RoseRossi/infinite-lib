@@ -1,52 +1,53 @@
-const huggingFace = require('../config/huggingface');
+const groqInstance = require('../config/groqcloud');  
 const Story = require('../models/Story');
 
-// Actualiza la función generateStory para incluir las opciones avanzadas
 exports.generateStory = async (req, res) => {
     const { title, prompt, genre, theme, characters, length } = req.body;
 
+    // Verifica que el username y el email del usuario estén presentes
+    if (!req.user || !req.user.username || !req.user.email) {
+        return res.status(400).json({ message: 'User username and email are required.' });
+    }
+
     try {
-        // Usar directamente el prompt proporcionado sin añadir texto extra
-        const refinedPrompt = prompt;
+        const data = {
+            messages: [
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+            model: "llama3-8b-8192",
+            max_tokens: length || 1000,
+            temperature: 0.7,
+            top_p: 0.9
+        };
 
-        // Solicitar al modelo que genere la historia
-        const response = await huggingFace.post('EleutherAI/gpt-neo-2.7B', {
-            inputs: refinedPrompt, 
-            options: {
-                max_length: length || 10000,
-                temperature: 0.5,
-                top_p: 0.9,
-                top_k: 50
-            }
-        });
-        
+        console.log('Datos enviados a GroqCloud:', data);
 
-        const generatedText = response.data[0].generated_text;
+        const response = await groqInstance.post('/chat/completions', data);
+        const generatedText = response.data.choices[0].message.content;
 
-        // Limpiar el prompt del texto generado
-        const storyContent = generatedText.replace(refinedPrompt, '').trim();
-
-        // Crear un título corto para la historia
-
-        // Crear la nueva historia
+        // Crear una nueva historia con el contenido generado
         const newStory = new Story({
-            title,  // Título breve para la historia
-            content: storyContent,
+            title,
+            content: generatedText,
             genre,
             theme,
             characters,
-            versiones: [{ content: storyContent }],
-            author: req.user.id
+            author: {
+                email: req.user.email,   // Garantizamos que el email esté presente
+                username: req.user.username  // Aquí usamos username
+            }
         });
 
         await newStory.save();
         res.status(201).json(newStory);
     } catch (error) {
         console.error('Error al generar la historia:', error);
-        res.status(500).json({ message: 'Error al generar la historia' });
+        res.status(500).json({ message: 'Error al generar la historia', error: error.message });
     }
 };
-
 
 // Función para crear historias manualmente
 exports.createStory = async (req, res) => {
@@ -70,17 +71,40 @@ exports.createStory = async (req, res) => {
     }
 };
 
-// Función para obtener todas las historias
+// Función para obtener las historias del usuario autenticado
 exports.getStories = async (req, res) => {
     try {
-        const stories = await Story.find().populate('author', 'username');
+        // Verifica si req.user está definido
+        console.log('req.user:', req.user);  
+
+        // Verifica si el email del usuario está presente
+        if (!req.user || !req.user.email) {
+            console.log('El usuario no está autenticado o no tiene email');  // Log para cuando el email no está presente
+            return res.status(400).json({ message: 'User not authenticated or missing email.' });
+        }
+
+        // Log del email que se está utilizando para buscar las historias
+        console.log('Buscando historias para el email:', req.user.email);
+
+        // Buscar las historias asociadas al correo del usuario autenticado
+        const stories = await Story.find({ 'author.email': req.user.email });
+
+        // Log de las historias obtenidas
+        console.log('Historias encontradas:', stories);
+
+        if (!stories.length) {
+            console.log('No se encontraron historias para este usuario');
+            return res.status(404).json({ message: 'No stories found.' });
+        }
+
         res.json(stories);
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error al obtener las historias:', error);
+        res.status(500).json({ message: 'Server error while fetching stories.' });
     }
 };
 
-// Función para obtener una historia por ID
+
 exports.getStoryById = async (req, res) => {
     try {
         const story = await Story.findById(req.params.id).populate('author', 'username');
@@ -94,7 +118,6 @@ exports.getStoryById = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-
 
 exports.continueStory = async (req, res) => {
     const { storyId, continuationPrompt } = req.body;
@@ -126,5 +149,26 @@ exports.continueStory = async (req, res) => {
     } catch (error) {
         console.error('Error al continuar la historia:', error);
         res.status(500).json({ message: 'Error al continuar la historia' });
+    }
+};
+
+// Función para actualizar una historia existente
+exports.updateStory = async (req, res) => {
+    const { id } = req.params;  // Obtener el ID de la historia de los parámetros de la URL
+    const updatedData = req.body;  // Obtener los datos actualizados del cuerpo de la solicitud
+
+    try {
+        // Encontrar la historia por su ID y actualizarla con los nuevos datos
+        const story = await Story.findByIdAndUpdate(id, updatedData, { new: true });
+
+        if (!story) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+
+        // Devolver la historia actualizada
+        res.json(story);
+    } catch (error) {
+        console.error('Error al actualizar la historia:', error);
+        res.status(500).json({ message: 'Error al actualizar la historia' });
     }
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -8,6 +9,7 @@ import {
   CssBaseline,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
 
 const theme = createTheme({
   palette: {
@@ -26,23 +28,41 @@ const theme = createTheme({
   },
 });
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+export default function Login({ setIsAuthenticated }) {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí iría la lógica de enviar los datos al servidor
-    console.log('Form submitted:', formData);
+    try {
+      // Realiza la solicitud POST al backend para iniciar sesión
+      const response = await axios.post('http://localhost:5000/api/users/login', formData);
+      
+      // Almacena el token en localStorage
+      const token = response.data.token; // Asegúrate de que el backend te envíe un token
+      localStorage.setItem('token', token); // Guarda solo el token
+
+      // Verifica que el token se haya almacenado correctamente
+      console.log('Token almacenado:', localStorage.getItem('token'));
+
+      setSuccess('Login successful!');
+      setError(null);
+      setIsAuthenticated(true); // Actualiza el estado de autenticación
+      navigate('/'); // Redirige al landing page
+    } catch (err) {
+      console.error('Error during login:', err);
+      setError('Login failed. Please try again.');
+      setSuccess(null);
+    }
   };
 
   return (
@@ -95,6 +115,8 @@ export default function Login() {
               Login
             </Button>
           </Box>
+          {error && <Typography color="error">{error}</Typography>}
+          {success && <Typography color="primary">{success}</Typography>}
         </Box>
       </Container>
     </ThemeProvider>
