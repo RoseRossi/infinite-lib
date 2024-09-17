@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
+import Generator from './components/Generator';
+import Stories from './components/Stories';
 import {
   AppBar,
   Toolbar,
@@ -13,6 +15,8 @@ import {
   CssBaseline,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import UserProfile from './components/UserProfile';
+import StoryViewer from './components/StoryViewer';
 
 // Crear un tema personalizado con colores lilas
 const theme = createTheme({
@@ -61,6 +65,10 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/generator" element={<Generator/>}/>
+          <Route path="/stories" element={<Stories/>}/>
+          <Route path="/userprof" element={<UserProfile/>}/>
+          <Route path="/story" element={<StoryViewer/>}/>
         </Routes>
       </Router>
     </ThemeProvider>
